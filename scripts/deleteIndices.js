@@ -1,6 +1,6 @@
 let client = require("../driver/elasticSearch");
 
-let list = ["car", "mini_trrucks", "trucks", "tempo"];
+let list = ["car", "mini_truck", "truck", "tempo"];
 
 async function deleteIndeices(indexName) {
     console.log("indexName", indexName);

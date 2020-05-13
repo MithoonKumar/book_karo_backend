@@ -12,6 +12,7 @@ class VehiclesService {
         vehicleDetails["location"] = req.body.location;
         vehicleDetails["vehicleNumber"] = req.body.vehicleNumber;
         vehicleDetails['nameOfTheOwner'] = req.body.nameOfTheOwner;
+        vehicleDetails['typeOfVehicle'] = req.body.typeOfVehicle;
         let vehicleId = vehicleDetails["mobileNumber"] + "_" + vehicleDetails["vehicleNumber"];
         let indexName = req.body["typeOfVehicle"];
         let params = { body : []};
@@ -34,30 +35,27 @@ class VehiclesService {
         }
     }
 
-    async getNextSetOfVehicles(scrollId, scrollTime) {
-        return new Promise((resolve, reject) => {
-            this.elasticSearch.scroll(
-                { scrollId: scrollId, scroll: scrollTime },
-                (err, response) => {
-                    if (err) {
-                        return reject(err);
-                    }
-                    return resolve(response);
-                }
-            );
-        });
-    }
+    // async getNextSetOfVehicles(scrollId, scrollTime) {
+    //     return new Promise((resolve, reject) => {
+    //         this.elasticSearch.scroll(
+    //             { scrollId: scrollId, scroll: scrollTime },
+    //             (err, response) => {
+    //                 if (err) {
+    //                     return reject(err);
+    //                 }
+    //                 return resolve(response);
+    //             }
+    //         );
+    //     });
+    // }
 
-    //need to test pagination
-    async getAllVehicles(mobileNumber, size, offset) {
+    async getOwnVehicles(mobileNumber, size) {
             let nameOfIndices = this.constants.elasticSearchIndices;
-            let scrollTime = "1m";
             return new Promise((resolve, reject) => {
                 this.elasticSearch.search(
                     {
                         index: nameOfIndices,
                         type: "vehicle",
-                        scroll: scrollTime,
                         body: {
                             size: size,
                             query: {
@@ -81,10 +79,47 @@ class VehiclesService {
                         if (err) {
                             return reject(err);
                         }
-                        return resolve(response);
+                        response = response.hits.hits;
+                        return resolve(response.map( ele => ele._source));
                     }
                 );
             });
+    }
+
+    async getVehiclesNearby(latlong, size) {
+        let nameOfIndices = this.constants.elasticSearchIndices;
+        return new Promise((resolve, reject) => {
+            this.elasticSearch.search(
+                {
+                    index: nameOfIndices,
+                    type: "vehicle",
+                    body: {
+                        size: size,
+                        query: {
+                            function_score: {
+                                query: {
+                                    bool: {
+                                        filter : {
+                                            geo_distance : {
+                                                distance : "60km",
+                                                location: latlong
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                (err, response) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    response = response.hits.hits;
+                    return resolve(response.map( ele => ele._source));
+                }
+            );
+        });
     }
 }
 

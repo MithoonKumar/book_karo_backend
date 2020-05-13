@@ -12,7 +12,8 @@ app.use(bodyparser.json({
 }));
 app.use(cors());
 app.use((req, res, next) => {
-    if (req.url.indexOf('/getOtp') != -1 || req.url.indexOf('/verifyOtp') != -1) {
+    if (req.url.indexOf('/getOtp') != -1 || req.url.indexOf('/verifyOtp') != -1
+        || req.url.indexOf('/getVehiclesNearby') != -1 || req.url.indexOf('/event') != -1) {
         return next();
     }
     let jwt = req.get('AuthToken');

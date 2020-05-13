@@ -39,7 +39,7 @@ class OtpTable {
                     S: mobileNumber
                 },
                 "otp": {
-                    N: otp
+                    S: otp
                 },
                 "expiryTime": {
                     N: expiryTime.toString()

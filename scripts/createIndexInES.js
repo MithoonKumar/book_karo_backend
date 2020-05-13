@@ -23,6 +23,9 @@ async function createIndex(typeOfVehicle) {
                         },
                         'nameOfTheOwner':{
                             "type": "text"
+                        },
+                        'typeOfVehicle': {
+                            "type": "text"
                         }
                     }
                 }
@@ -37,7 +40,7 @@ async function createIndex(typeOfVehicle) {
     }
 }
 
-let list = ["car", "mini_trrucks", "trucks", "tempo"];
+let list = ["car", "mini_truck", "truck", "tempo"];
 
 for (let index = 0; index<list.length; index++) {
     createIndex(list[index]);

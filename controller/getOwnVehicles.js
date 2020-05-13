@@ -1,4 +1,4 @@
-class GetVehicles {
+class GetOwnVehicles {
 
     constructor(container) {
         this.logger = console;
@@ -9,7 +9,7 @@ class GetVehicles {
     async handleRequest(req, res) {
         let mobileNumber = req.query["mobileNumber"];
         let err, response;
-        [ err, response ] = await this.invoker(this.vehiclesService.getAllVehicles(mobileNumber, 1));
+        [ err, response ] = await this.invoker(this.vehiclesService.getOwnVehicles(mobileNumber, 100));
         if (err) {
             this.logger.error("Error while getting vechiles using mobile number", {
                 err,
@@ -23,18 +23,6 @@ class GetVehicles {
         res.send(response);
     }
 
-    async handleScroll(req, res) {
-        let scrollId = req.query["scrollId"];
-        let err, response;
-        [err, response]= await this.invoker(this.vehiclesService.getNextSetOfVehicles(scrollId, "1m"));
-        if (err) {
-            res.status(500);
-            res.send("Internal Server Error");
-        }
-        res.status(200);
-        res.send(response);
-    }
-
 }
 
-module.exports = GetVehicles;
+module.exports = GetOwnVehicles;

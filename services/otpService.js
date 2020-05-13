@@ -11,7 +11,7 @@ class OtpService {
     }
 
     async getOtp(mobileNumber) {
-        let otp = this.otpGenerator.generate(6, { specialChars: false, alphabets: false, upperCase: false, digits: true });
+        let otp = (this.otpGenerator.generate(6, { specialChars: false, alphabets: false, upperCase: false, digits: true })).toString();
         let err;
         [err] = await this.invoker(this.otpTable.putOtp(mobileNumber, otp));
         if (err) {
@@ -45,7 +45,7 @@ class OtpService {
             return Promise.reject({"err": "Error while reading otp from table"});
         }
         let currentTime = Number(new Date());
-        if (response.Item.expiryTime.N > currentTime && response.Item.otp.N === otp) {
+        if (Number(response.Item.expiryTime.N) > currentTime && response.Item.otp.S === otp) {
             [err] = await this.invoker(this.otpTable.updateExpiryTime(mobileNumber));
             if (err) {
                 this.logger.error("Error while updating expiry time", {

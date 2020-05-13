@@ -16,9 +16,8 @@ class VerifyOtp {
             res.send(err);
         } else {
             let token = this.auth.generateJWT(mobileNumber);
-            res.cookie('AuthToken', token, { maxAge: 900000, httpOnly: true });
             res.status(200);
-            res.send("successfully verified the OTP");
+            res.send({"message": "successfully verified the OTP", 'AuthToken': token});
         }
     }
 
