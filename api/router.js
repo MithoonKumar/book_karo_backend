@@ -29,6 +29,8 @@ router.get('/getVehiclesNearby', (req, res) => {
 //    req.container.resolve('getNextSetOfVehicles').handleRequest(req, res);
 // });
 //
+
+
 router.post('/event', (req, res) => {
    req.container.resolve('event').handleRequest(req, res);
 });
